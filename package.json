@@ -3,25 +3,44 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "nodemonConfig": {
+    "ext": "js",
+    "ignore": [
+      "*.test.ts",
+      "db/*",
+      "*.config.js"
+    ],
+    "delay": "2"
+  },
   "scripts": {
-    "dev": "node server",
+    "dev": "nodemon --ignore /vite.config.js server",
     "build": "npm run build:client && npm run build:server",
     "build:client": "vite build --ssrManifest --outDir dist/client",
     "build:server": "vite build --ssr src/entry-server.jsx --outDir dist/server",
     "preview": "cross-env NODE_ENV=production node server"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "compression": "^1.7.4",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "mongoose": "^8.4.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "sirv": "^2.0.4"
+    "sirv": "^2.0.4",
+    "validator": "^13.12.0"
   },
   "devDependencies": {
+    "@types/express": "^4.17.21",
     "@types/react": "^18.2.79",
     "@types/react-dom": "^18.2.25",
     "@vitejs/plugin-react": "^4.2.1",
+    "body-parser": "^1.20.2",
     "cross-env": "^7.0.3",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^3.1.4",
+    "react-router-dom": "^6.24.1",
     "vite": "^5.2.10"
   }
 }
