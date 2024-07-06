@@ -1,5 +1,11 @@
 import fs from 'node:fs/promises'
 import express from 'express'
+import dotenv from 'dotenv'
+import mongoose from 'mongoose'
+import authRoutes from './routes/auth.js'
+import bodyParser from 'body-parser'
+
+dotenv.config()
 
 // Constants
 const isProduction = process.env.NODE_ENV === 'production'
@@ -16,6 +22,24 @@ const ssrManifest = isProduction
 
 // Create http server
 const app = express()
+// edit this later
+
+
+app.use(express.json())
+
+app.use(bodyParser.urlencoded({ extended: false }))
+
+app.use(bodyParser.json())
+
+app.use("/auth", authRoutes)
+
+
+//setting up client side rendering 
+/* app.use(express.static(path.join(__dirname)))
+
+app.get('*', (req, res) => {  
+  res.sendFile(path.join(__dirname, 'index.html'))
+}) */
 
 // Add Vite or respective production middlewares
 let vite
@@ -51,7 +75,7 @@ app.use('*', async (req, res) => {
       render = (await import('./dist/server/entry-server.js')).render
     }
 
-    const rendered = await render(url, ssrManifest)
+    const rendered = await render(req.url)
 
     const html = template
       .replace(`<!--app-head-->`, rendered.head ?? '')
@@ -63,6 +87,14 @@ app.use('*', async (req, res) => {
     console.log(e.stack)
     res.status(500).end(e.stack)
   }
+})
+
+mongoose.set('strictQuery', true)
+mongoose.connect(process.env.MONGO_URI)
+.then(() => {
+  console.log('Connected to MongoDB')
+}).catch((err) => {
+  console.log(err)
 })
 
 // Start http server
